@@ -1,5 +1,5 @@
 /**
- * Autofill event polyfill ##version:1.0.1##
+ * Autofill event polyfill ##version:1.0.5##
  * (c) 2014 Google, Inc.
  * License: MIT
  */
@@ -54,6 +54,9 @@
       el = this[i];
       if (!valueMarked(el)) {
         markValue(el);
+        if (el.type === 'checkbox') {
+          continue;
+        }
         triggerChangeEvent(el);
       }
     }
@@ -65,23 +68,11 @@
       // as real value. This might have been filled in the backend,
       // ...
       // Note: it's important to not use the value property here!
-
-      if (el.type === 'checkbox') {
-        // Use checked attribute for checkboxes as value
-        el.$$currentValue = (el.getAttribute('checked') !== null);
-      } else {
-        el.$$currentValue = el.getAttribute('value');
-      }
+      el.$$currentValue = el.getAttribute('value');
     }
 
-    var val;
-    if (el.type === 'checkbox') {
-      val = el.checked
-    } else {
-      val = el.value;
-    }
-
-    var $$currentValue = el.$$currentValue;
+    var val = el.value,
+         $$currentValue = el.$$currentValue;
     if (!val && !$$currentValue) {
       return true;
     }
